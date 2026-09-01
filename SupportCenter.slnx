@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SupportCenter.Api/SupportCenter.Api.csproj" />
+    <Project Path="src/SupportCenter.Application/SupportCenter.Application.csproj" />
+    <Project Path="src/SupportCenter.Domain/SupportCenter.Domain.csproj" />
+    <Project Path="src/SupportCenter.Infrastructure/SupportCenter.Infrastructure.csproj" />
+    <Project Path="src/SupportCenter.Shared/SupportCenter.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SupportCenter.ArchitectureTests/SupportCenter.ArchitectureTests.csproj" />
+    <Project Path="tests/SupportCenter.IntegrationTests/SupportCenter.IntegrationTests.csproj" />
+    <Project Path="tests/SupportCenter.UnitTests/SupportCenter.UnitTests.csproj" />
+  </Folder>
+</Solution>

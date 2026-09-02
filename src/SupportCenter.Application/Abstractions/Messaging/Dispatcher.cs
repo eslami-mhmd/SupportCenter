@@ -1,19 +1,56 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace SupportCenter.Application.Abstractions.Messaging;
 
 public class Dispatcher : IDispatcher
 {
-    public Task<TResponse> Send<TResponse>(
-        ICommand<TResponse> command,
-        CancellationToken cancellationToken = default)
+    private readonly IServiceProvider _serviceProvider;
+
+
+    public Dispatcher(IServiceProvider serviceProvider)
     {
-        throw new NotImplementedException();
+        _serviceProvider = serviceProvider;
     }
 
 
-    public Task<TResponse> Send<TResponse>(
+    public async Task<TResponse> Send<TResponse>(
+        ICommand<TResponse> command,
+        CancellationToken cancellationToken = default)
+    {
+        var handlerType =
+            typeof(ICommandHandler<,>)
+            .MakeGenericType(
+                command.GetType(),
+                typeof(TResponse));
+
+
+        dynamic handler =
+            _serviceProvider.GetRequiredService(handlerType);
+
+
+        return await handler.Handle(
+            (dynamic)command,
+            cancellationToken);
+    }
+
+
+    public async Task<TResponse> Send<TResponse>(
         IQuery<TResponse> query,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var handlerType =
+            typeof(IQueryHandler<,>)
+            .MakeGenericType(
+                query.GetType(),
+                typeof(TResponse));
+
+
+        dynamic handler =
+            _serviceProvider.GetRequiredService(handlerType);
+
+
+        return await handler.Handle(
+            (dynamic)query,
+            cancellationToken);
     }
 }

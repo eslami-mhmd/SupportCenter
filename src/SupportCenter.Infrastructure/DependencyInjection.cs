@@ -1,3 +1,5 @@
+using SupportCenter.Application.Abstractions.Repositories;
+using SupportCenter.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +11,10 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddScoped<
+            IOrganizationRepository,
+            InMemoryOrganizationRepository>();
+
         return services;
     }
 }

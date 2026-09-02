@@ -1,0 +1,19 @@
+services:
+  supportcenter-postgres:
+    image: postgres:17
+    container_name: supportcenter-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - supportcenter-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  supportcenter-postgres-data:

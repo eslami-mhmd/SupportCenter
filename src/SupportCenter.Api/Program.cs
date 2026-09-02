@@ -1,31 +1,21 @@
 using SupportCenter.Application;
 using SupportCenter.Infrastructure;
+using SupportCenter.Api.Endpoints.Organizations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddApplication();
 
-builder.Services.AddControllers();
+builder.Services
+    .AddInfrastructure(
+        builder.Configuration);
 
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen();
-
+builder.Services
+    .AddOpenApi();
 
 var app = builder.Build();
 
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-
-app.UseHttpsRedirection();
-
-app.MapControllers();
+app.MapCreateOrganization();
 
 app.Run();

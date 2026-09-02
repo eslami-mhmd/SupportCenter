@@ -1,22 +1,25 @@
+using SupportCenter.Domain.Events;
+
 namespace SupportCenter.Domain.Common;
 
 public abstract class Entity
 {
-    private readonly List<object> _domainEvents = [];
+    private readonly List<IDomainEvent> _domainEvents = [];
 
     protected Entity(Guid id)
     {
         Id = id;
     }
 
+
     public Guid Id { get; protected set; }
 
 
-    public IReadOnlyCollection<object> DomainEvents =>
+    public IReadOnlyCollection<IDomainEvent> DomainEvents =>
         _domainEvents.AsReadOnly();
 
 
-    protected void AddDomainEvent(object domainEvent)
+    protected void AddDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }

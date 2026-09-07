@@ -20,6 +20,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SupportCenter.Api\SupportCenter.Api.csproj" />
+    <ProjectReference Include="..\..\src\SupportCenter.Application\SupportCenter.Application.csproj" />
+    <ProjectReference Include="..\..\src\SupportCenter.Infrastructure\SupportCenter.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\SupportCenter.Domain\SupportCenter.Domain.csproj" />
   </ItemGroup>
 
 </Project>

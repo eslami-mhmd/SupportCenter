@@ -12,11 +12,23 @@ public class CreateOrganizationTests
     [Fact]
     public async Task Should_create_organization()
     {
+        var configuration =
+            new ConfigurationBuilder()
+                .AddInMemoryCollection(
+                    new Dictionary<string, string?>
+                    {
+                {
+                    "ConnectionStrings:Database",
+                    "Host=localhost;Port=5432;Database=supportcenter;Username=postgres;Password=postgres"
+                }
+                    })
+                .Build();
+
         var services = new ServiceCollection();
 
         services.AddApplication();
-        services.AddInfrastructure(
-            new ConfigurationBuilder().Build());
+        Console.WriteLine(configuration.GetConnectionString("Databse"));
+        services.AddInfrastructure(configuration);
 
         var provider = services.BuildServiceProvider();
 

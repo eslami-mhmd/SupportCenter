@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using SupportCenter.Application.Exceptions;
 
 namespace SupportCenter.Api.Middleware;
 
@@ -22,7 +23,7 @@ public sealed class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             await HandleExceptionAsync(
                 context,
@@ -30,26 +31,34 @@ public sealed class ExceptionHandlingMiddleware
         }
     }
 
-
     private static async Task HandleExceptionAsync(
-        HttpContext context,
-        Exception exception)
+    HttpContext context,
+    Exception exception)
     {
         context.Response.ContentType =
             "application/json";
 
+        if (exception is ValidationException validationException)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            await context.Response.WriteAsJsonAsync(
+                new
+                {
+                    error = validationException.Message,
+                    errors = validationException.Errors
+                });
+
+            return;
+        }
 
         context.Response.StatusCode =
-            (int)HttpStatusCode.InternalServerError;
+            StatusCodes.Status500InternalServerError;
 
-
-        var response = new
-        {
-            error = exception.Message
-        };
-
-
-        await context.Response.WriteAsync(
-            JsonSerializer.Serialize(response));
+        await context.Response.WriteAsJsonAsync(
+            new
+            {
+                error = "An unexpected error occurred."
+            });
     }
 }

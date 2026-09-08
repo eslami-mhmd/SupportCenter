@@ -23,5 +23,6 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapCreateOrganization();
 app.MapCreateTicket();
 app.MapGetTicket();
+app.MapListTickets();
 
 app.Run();

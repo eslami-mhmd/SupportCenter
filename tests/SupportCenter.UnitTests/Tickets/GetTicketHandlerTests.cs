@@ -1,28 +1,28 @@
 using NSubstitute;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Tickets.GetTicket;
+using SupportCenter.Application.Exceptions;
 
 namespace SupportCenter.UnitTests.Tickets;
 
 public class GetTicketHandlerTests
 {
     [Fact]
-    public async Task Handle_Should_Return_Ticket_When_Exists()
+    public async Task Should_return_ticket()
     {
         // Arrange
         var repository = Substitute.For<ITicketReadRepository>();
 
-        var handler = new GetTicketQueryHandler(repository);
-
         var ticketId = Guid.NewGuid();
+        var organizationId = Guid.NewGuid();
 
-        var expectedTicket = new TicketDto(
+        var ticket = new TicketDto(
             ticketId,
-            Guid.NewGuid(),
+            organizationId,
             "Cannot login",
-            "User cannot access the application",
+            "User cannot access account",
             "Open",
-            "Medium",
+            "High",
             DateTime.UtcNow);
 
 
@@ -30,33 +30,20 @@ public class GetTicketHandlerTests
             .GetByIdAsync(
                 ticketId,
                 Arg.Any<CancellationToken>())
-            .Returns(expectedTicket);
+            .Returns(ticket);
 
 
-        var query = new GetTicketQuery(ticketId);
+        var handler = new GetTicketQueryHandler(repository);
 
 
         // Act
         var result = await handler.Handle(
-            query,
+            new GetTicketQuery(ticketId),
             CancellationToken.None);
 
 
         // Assert
-        Assert.NotNull(result);
-
-        Assert.Equal(
-            expectedTicket.Id,
-            result.Id);
-
-        Assert.Equal(
-            expectedTicket.Title,
-            result.Title);
-
-        Assert.Equal(
-            expectedTicket.Description,
-            result.Description);
-
+        Assert.Equal(ticketId, result.Id);
 
         await repository
             .Received(1)
@@ -67,15 +54,12 @@ public class GetTicketHandlerTests
 
 
     [Fact]
-    public async Task Handle_Should_Return_Null_When_Ticket_Does_Not_Exist()
+    public async Task Should_throw_when_ticket_not_found()
     {
         // Arrange
         var repository = Substitute.For<ITicketReadRepository>();
 
-        var handler = new GetTicketQueryHandler(repository);
-
         var ticketId = Guid.NewGuid();
-
 
         repository
             .GetByIdAsync(
@@ -84,23 +68,14 @@ public class GetTicketHandlerTests
             .Returns((TicketDto?)null);
 
 
-        var query = new GetTicketQuery(ticketId);
+        var handler = new GetTicketQueryHandler(repository);
 
 
-        // Act
-        var result = await handler.Handle(
-            query,
-            CancellationToken.None);
+        // Act + Assert
 
-
-        // Assert
-        Assert.Null(result);
-
-
-        await repository
-            .Received(1)
-            .GetByIdAsync(
-                ticketId,
-                Arg.Any<CancellationToken>());
+        await Assert.ThrowsAsync<NotFoundException>(
+            () => handler.Handle(
+                new GetTicketQuery(ticketId),
+                CancellationToken.None));
     }
 }

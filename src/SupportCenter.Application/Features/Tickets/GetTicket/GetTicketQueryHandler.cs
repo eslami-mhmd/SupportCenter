@@ -1,13 +1,13 @@
-using SupportCenter.Application.Abstractions.Messaging;
 using SupportCenter.Application.Abstractions.Repositories;
+using SupportCenter.Application.Exceptions;
+using SupportCenter.Application.Abstractions.Messaging;
 
 namespace SupportCenter.Application.Features.Tickets.GetTicket;
 
-public sealed class GetTicketQueryHandler
-    : IQueryHandler<GetTicketQuery, TicketDto?>
+public sealed class GetTicketQueryHandler 
+    : IQueryHandler<GetTicketQuery, TicketDto>
 {
     private readonly ITicketReadRepository _repository;
-
 
     public GetTicketQueryHandler(
         ITicketReadRepository repository)
@@ -15,13 +15,21 @@ public sealed class GetTicketQueryHandler
         _repository = repository;
     }
 
-
-    public async Task<TicketDto?> Handle(
+    public async Task<TicketDto> Handle(
         GetTicketQuery query,
         CancellationToken cancellationToken)
     {
-        return await _repository.GetByIdAsync(
+        var ticket = await _repository.GetByIdAsync(
             query.Id,
             cancellationToken);
+
+        if (ticket is null)
+        {
+            throw new NotFoundException(
+                "Ticket",
+                query.Id);
+        }
+
+        return ticket;
     }
 }

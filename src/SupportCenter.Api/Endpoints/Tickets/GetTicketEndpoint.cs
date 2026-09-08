@@ -15,14 +15,11 @@ public static class GetTicketEndpoint
                 IDispatcher dispatcher,
                 CancellationToken cancellationToken) =>
             {
-                var ticket = await dispatcher.Send<TicketDto?>(
+                var ticket = await dispatcher.Send<TicketDto>(
                     new GetTicketQuery(id),
                     cancellationToken);
 
-
-                return ticket is null
-                    ? Results.NotFound()
-                    : Results.Ok(ticket);
+                return Results.Ok(ticket);
             });
     }
 }

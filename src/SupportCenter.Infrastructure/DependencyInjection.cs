@@ -27,7 +27,9 @@ public static class DependencyInjection
         services.AddScoped<
             ITicketRepository,
             TicketRepository>();
-
+        services.AddScoped<
+            ITicketReadRepository,
+            TicketReadRepository>();
 
         return services;
     }

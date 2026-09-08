@@ -1,6 +1,7 @@
 using SupportCenter.Application;
 using SupportCenter.Infrastructure;
 using SupportCenter.Api.Endpoints.Organizations;
+using SupportCenter.Api.Endpoints.Tickets;
 using SupportCenter.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,5 +21,6 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapCreateOrganization();
+app.MapCreateTicket();
 
 app.Run();

@@ -2,6 +2,7 @@ using SupportCenter.Application;
 using SupportCenter.Infrastructure;
 using SupportCenter.Api.Endpoints.Organizations;
 using SupportCenter.Api.Endpoints.Tickets;
+using SupportCenter.Api.Endpoints.Users;
 using SupportCenter.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,5 +32,6 @@ app.MapCreateTicket();
 app.MapGetTicket();
 app.MapListTickets();
 app.MapChangeTicketStatus();
+app.MapCreateUser();
 
 app.Run();

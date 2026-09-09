@@ -30,6 +30,9 @@ public static class DependencyInjection
         services.AddScoped<
             ITicketReadRepository,
             TicketReadRepository>();
+        services.AddScoped<
+            IUserRepository,
+            UserRepository>();
 
         return services;
     }

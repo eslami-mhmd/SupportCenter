@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SupportCenter.Domain.Organizations;
 using SupportCenter.Domain.Tickets;
 using SupportCenter.Domain.Users;
+using SupportCenter.Domain.Sla;
 
 namespace SupportCenter.Infrastructure.Persistence;
 
@@ -16,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<Organization> Organizations => Set<Organization>();
     public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<SlaPolicy> SlaPolicies => Set<SlaPolicy>();
     protected override void OnModelCreating(
         ModelBuilder modelBuilder)
     {

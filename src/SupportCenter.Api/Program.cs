@@ -3,6 +3,7 @@ using SupportCenter.Infrastructure;
 using SupportCenter.Api.Endpoints.Organizations;
 using SupportCenter.Api.Endpoints.Tickets;
 using SupportCenter.Api.Endpoints.Users;
+using SupportCenter.Api.Endpoints.Sla;
 using SupportCenter.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,5 +35,6 @@ app.MapListTickets();
 app.MapChangeTicketStatus();
 app.MapCreateUser();
 app.MapAssignTicket();
+app.MapCreateSlaPolicy();
 
 app.Run();

@@ -4,7 +4,7 @@ using SupportCenter.Domain.Tickets;
 
 namespace SupportCenter.Infrastructure.Persistence.Configurations;
 
-public sealed class TicketConfiguration 
+public sealed class TicketConfiguration
     : IEntityTypeConfiguration<Ticket>
 {
     public void Configure(
@@ -26,5 +26,7 @@ public sealed class TicketConfiguration
 
         builder.Property(x => x.Priority)
             .HasConversion<int>();
+
+        builder.Property(x => x.AssignedUserId);
     }
 }

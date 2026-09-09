@@ -26,6 +26,8 @@ public sealed class Ticket
 
     public Guid OrganizationId { get; private set; }
 
+    public Guid? AssignedUserId { get; private set; }
+
     public string Title { get; private set; } = string.Empty;
 
     public string Description { get; private set; } = string.Empty;
@@ -98,5 +100,16 @@ public sealed class Ticket
 
             _ => false
         };
+    }
+
+    public void AssignTo(Guid userId)
+    {
+        if (userId == Guid.Empty)
+        {
+            throw new DomainException(
+                "User is required.");
+        }
+
+        AssignedUserId = userId;
     }
 }

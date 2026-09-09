@@ -33,5 +33,6 @@ app.MapGetTicket();
 app.MapListTickets();
 app.MapChangeTicketStatus();
 app.MapCreateUser();
+app.MapAssignTicket();
 
 app.Run();

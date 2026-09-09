@@ -11,7 +11,7 @@ public class CreateTicketHandlerTests
     public async Task Handle_Should_Create_Ticket()
     {
         // Arrange
-        var repository = Substitute.For<ITicketRepository>();
+        var repository = Substitute.For<ITicketWriteRepository>();
 
         var handler = new CreateTicketCommandHandler(repository);
 

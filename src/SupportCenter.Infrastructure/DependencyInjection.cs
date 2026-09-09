@@ -25,7 +25,7 @@ public static class DependencyInjection
             IOrganizationRepository,
             OrganizationRepository>();
         services.AddScoped<
-            ITicketRepository,
+            ITicketWriteRepository,
             TicketRepository>();
         services.AddScoped<
             ITicketReadRepository,

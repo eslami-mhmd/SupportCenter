@@ -6,6 +6,12 @@ using SupportCenter.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(
+        new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+
 builder.Services
     .AddApplication();
 
@@ -24,5 +30,6 @@ app.MapCreateOrganization();
 app.MapCreateTicket();
 app.MapGetTicket();
 app.MapListTickets();
+app.MapChangeTicketStatus();
 
 app.Run();

@@ -7,10 +7,10 @@ namespace SupportCenter.Application.Features.Tickets.CreateTicket;
 public sealed class CreateTicketCommandHandler
     : ICommandHandler<CreateTicketCommand, Guid>
 {
-    private readonly ITicketRepository _repository;
+    private readonly ITicketWriteRepository _repository;
 
     public CreateTicketCommandHandler(
-        ITicketRepository repository)
+        ITicketWriteRepository repository)
     {
         _repository = repository;
     }

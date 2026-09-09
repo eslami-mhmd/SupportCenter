@@ -56,4 +56,47 @@ public sealed class Ticket
             title,
             description);
     }
+
+    public void ChangeStatus(TicketStatus newStatus)
+    {
+        if (Status == TicketStatus.Closed)
+        {
+            throw new DomainException(
+                "Closed tickets cannot be modified.");
+        }
+
+        if (!IsValidTransition(Status, newStatus))
+        {
+            throw new DomainException(
+                $"Cannot change ticket status from {Status} to {newStatus}.");
+        }
+
+        Status = newStatus;
+    }
+
+
+    private static bool IsValidTransition(
+        TicketStatus current,
+        TicketStatus next)
+    {
+        return current switch
+        {
+            TicketStatus.Open =>
+                next is TicketStatus.InProgress
+                    or TicketStatus.WaitingForCustomer,
+
+            TicketStatus.InProgress =>
+                next is TicketStatus.WaitingForCustomer
+                    or TicketStatus.Resolved,
+
+            TicketStatus.WaitingForCustomer =>
+                next is TicketStatus.InProgress
+                    or TicketStatus.Resolved,
+
+            TicketStatus.Resolved =>
+                next is TicketStatus.Closed,
+
+            _ => false
+        };
+    }
 }

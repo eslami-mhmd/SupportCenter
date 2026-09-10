@@ -1,6 +1,7 @@
 using NSubstitute;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Tickets.CreateTicket;
+using SupportCenter.Domain.Sla;
 using SupportCenter.Domain.Tickets;
 
 namespace SupportCenter.UnitTests.Tickets;
@@ -11,11 +12,24 @@ public class CreateTicketHandlerTests
     public async Task Handle_Should_Create_Ticket()
     {
         // Arrange
-        var repository = Substitute.For<ITicketWriteRepository>();
+        var ticketRepository =
+            Substitute.For<ITicketWriteRepository>();
 
-        var handler = new CreateTicketCommandHandler(repository);
+        var slaPolicyRepository =
+            Substitute.For<ISlaPolicyRepository>();
+
+        var ticketSlaRepository =
+            Substitute.For<ITicketSlaRepository>();
+
+
+        var handler = new CreateTicketCommandHandler(
+            ticketRepository,
+            slaPolicyRepository,
+            ticketSlaRepository);
+
 
         var organizationId = Guid.NewGuid();
+
 
         var command = new CreateTicketCommand(
             organizationId,
@@ -25,11 +39,31 @@ public class CreateTicketHandlerTests
 
         Ticket? createdTicket = null;
 
-        repository
+
+        ticketRepository
             .AddAsync(
-                Arg.Do<Ticket>(ticket => createdTicket = ticket),
+                Arg.Do<Ticket>(
+                    ticket => createdTicket = ticket),
                 Arg.Any<CancellationToken>())
             .Returns(Task.CompletedTask);
+
+
+
+        var slaPolicy = SlaPolicy.Create(
+            organizationId,
+            TicketPriority.Medium,
+            30,
+            240);
+
+
+
+        slaPolicyRepository
+            .GetAsync(
+                organizationId,
+                TicketPriority.Medium,
+                Arg.Any<CancellationToken>())
+            .Returns(slaPolicy);
+
 
 
         // Act
@@ -38,13 +72,16 @@ public class CreateTicketHandlerTests
             CancellationToken.None);
 
 
+
         // Assert
+
         Assert.NotEqual(
             Guid.Empty,
             result);
 
 
-        Assert.NotNull(createdTicket);
+        Assert.NotNull(
+            createdTicket);
 
 
         Assert.Equal(
@@ -72,10 +109,19 @@ public class CreateTicketHandlerTests
             createdTicket.Priority);
 
 
-        await repository
+
+        await ticketRepository
             .Received(1)
             .AddAsync(
                 Arg.Any<Ticket>(),
+                Arg.Any<CancellationToken>());
+
+
+
+        await ticketSlaRepository
+            .Received(1)
+            .AddAsync(
+                Arg.Any<TicketSla>(),
                 Arg.Any<CancellationToken>());
     }
 }

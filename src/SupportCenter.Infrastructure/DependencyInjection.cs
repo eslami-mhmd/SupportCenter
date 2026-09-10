@@ -36,6 +36,9 @@ public static class DependencyInjection
         services.AddScoped<
             ISlaPolicyRepository,
             SlaPolicyRepository>();
+        services.AddScoped<
+            ITicketSlaRepository, 
+            TicketSlaRepository>();
 
         return services;
     }

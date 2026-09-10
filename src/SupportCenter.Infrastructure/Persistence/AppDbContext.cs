@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<User> Users => Set<User>();
     public DbSet<SlaPolicy> SlaPolicies => Set<SlaPolicy>();
+    public DbSet<TicketSla> TicketSlas => Set<TicketSla>();
     protected override void OnModelCreating(
         ModelBuilder modelBuilder)
     {

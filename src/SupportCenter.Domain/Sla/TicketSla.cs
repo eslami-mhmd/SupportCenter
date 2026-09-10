@@ -8,6 +8,7 @@ public sealed class TicketSla
     {
     }
 
+
     private TicketSla(
         Guid id,
         Guid ticketId,
@@ -20,54 +21,70 @@ public sealed class TicketSla
         SlaPolicyId = slaPolicyId;
         ResponseDeadline = responseDeadline;
         ResolutionDeadline = resolutionDeadline;
+        IsBreached = false;
     }
+
 
     public Guid Id { get; private set; }
 
+
     public Guid TicketId { get; private set; }
+
 
     public Guid SlaPolicyId { get; private set; }
 
+
     public DateTime ResponseDeadline { get; private set; }
+
 
     public DateTime ResolutionDeadline { get; private set; }
 
-    public bool ResponseBreached { get; private set; }
 
-    public bool ResolutionBreached { get; private set; }
+    public bool IsBreached { get; private set; }
+
+
 
     public static TicketSla Create(
         Guid ticketId,
-        SlaPolicy policy,
-        DateTime createdAtUtc)
+        Guid slaPolicyId,
+        int responseTimeMinutes,
+        int resolutionTimeMinutes)
     {
         if (ticketId == Guid.Empty)
             throw new DomainException(
                 "Ticket is required.");
 
-        var responseDeadline =
-            createdAtUtc.AddMinutes(
-                policy.ResponseTimeMinutes);
 
-        var resolutionDeadline =
-            createdAtUtc.AddMinutes(
-                policy.ResolutionTimeMinutes);
+        if (slaPolicyId == Guid.Empty)
+            throw new DomainException(
+                "SLA policy is required.");
+
+
+        if (responseTimeMinutes <= 0)
+            throw new DomainException(
+                "Response time must be positive.");
+
+
+        if (resolutionTimeMinutes <= 0)
+            throw new DomainException(
+                "Resolution time must be positive.");
+
+
+        var now = DateTime.UtcNow;
+
 
         return new TicketSla(
             Guid.NewGuid(),
             ticketId,
-            policy.Id,
-            responseDeadline,
-            resolutionDeadline);
+            slaPolicyId,
+            now.AddMinutes(responseTimeMinutes),
+            now.AddMinutes(resolutionTimeMinutes));
     }
 
-    public void MarkResponseBreached()
-    {
-        ResponseBreached = true;
-    }
 
-    public void MarkResolutionBreached()
+
+    public void MarkAsBreached()
     {
-        ResolutionBreached = true;
+        IsBreached = true;
     }
 }

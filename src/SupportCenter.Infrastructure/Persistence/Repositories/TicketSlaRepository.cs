@@ -3,7 +3,7 @@ using SupportCenter.Domain.Sla;
 
 namespace SupportCenter.Infrastructure.Persistence.Repositories;
 
-public sealed class TicketSlaRepository 
+public sealed class TicketSlaRepository
     : ITicketSlaRepository
 {
     private readonly AppDbContext _context;
@@ -24,6 +24,16 @@ public sealed class TicketSlaRepository
             ticketSla,
             cancellationToken);
 
+
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
+
+    public async Task UpdateAsync(
+    TicketSla ticketSla,
+    CancellationToken cancellationToken)
+    {
+        _context.TicketSlas.Update(ticketSla);
 
         await _context.SaveChangesAsync(
             cancellationToken);

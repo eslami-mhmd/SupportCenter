@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Infrastructure.Persistence;
 using SupportCenter.Infrastructure.Persistence.Repositories;
+using SupportCenter.Application.Abstractions.Sla;
+using SupportCenter.Application.Features.Sla;
 
 namespace SupportCenter.Infrastructure;
 
@@ -42,6 +44,9 @@ public static class DependencyInjection
         services.AddScoped<
             ITicketSlaReadRepository,
             TicketSlaReadRepository>();
+        services.AddScoped<
+            ISlaMonitoringService,
+             SlaMonitoringService>();
 
         return services;
     }

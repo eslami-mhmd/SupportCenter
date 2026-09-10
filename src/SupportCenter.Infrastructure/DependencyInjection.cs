@@ -47,7 +47,10 @@ public static class DependencyInjection
         services.AddScoped<
             ISlaMonitoringService,
              SlaMonitoringService>();
-
+        services.AddScoped<
+            INotificationRepository,
+            NotificationRepository>();
+    
         return services;
     }
 }

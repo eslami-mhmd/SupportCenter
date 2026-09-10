@@ -43,7 +43,7 @@ public class TicketSlaTests
 
 
         Assert.True(
-            ticketSla.ResolutionDeadline > 
+            ticketSla.ResolutionDeadline >
             ticketSla.ResponseDeadline);
     }
 
@@ -120,5 +120,33 @@ public class TicketSlaTests
 
         Assert.True(
             ticketSla.IsBreached);
+
+
+        Assert.NotNull(
+            ticketSla.BreachedDate);
+    }
+
+    [Fact]
+    public void Should_not_change_breach_date_when_already_breached()
+    {
+        var ticketSla = TicketSla.Create(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            30,
+            480);
+
+
+        ticketSla.MarkAsBreached();
+
+        var firstDate =
+            ticketSla.BreachedDate;
+
+
+        ticketSla.MarkAsBreached();
+
+
+        Assert.Equal(
+            firstDate,
+            ticketSla.BreachedDate);
     }
 }

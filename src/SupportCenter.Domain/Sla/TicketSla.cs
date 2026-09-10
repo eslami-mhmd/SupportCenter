@@ -39,9 +39,9 @@ public sealed class TicketSla
 
     public DateTime ResolutionDeadline { get; private set; }
 
-
     public bool IsBreached { get; private set; }
 
+    public DateTime? BreachedDate { get; private set; }
 
 
     public static TicketSla Create(
@@ -85,6 +85,10 @@ public sealed class TicketSla
 
     public void MarkAsBreached()
     {
+        if (IsBreached)
+            return;
+
         IsBreached = true;
+        BreachedDate = DateTime.UtcNow;
     }
 }

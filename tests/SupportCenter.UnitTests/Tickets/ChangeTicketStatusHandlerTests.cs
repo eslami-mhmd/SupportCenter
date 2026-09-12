@@ -4,6 +4,8 @@ using SupportCenter.Application.Exceptions;
 using SupportCenter.Domain.Exceptions;
 using SupportCenter.Application.Features.Tickets.ChangeTicketStatus;
 using SupportCenter.Domain.Tickets;
+using SupportCenter.Application.Abstractions.Messaging;
+using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
 
 namespace SupportCenter.UnitTests.Tickets;
 
@@ -23,17 +25,19 @@ public class ChangeTicketStatusHandlerTests
                 "Cannot login",
                 "Customer cannot access account");
 
-
         repository
             .GetAsync(
                 ticket.Id,
                 Arg.Any<CancellationToken>())
             .Returns(ticket);
 
+        var dispatcher =
+            Substitute.For<IDispatcher>();
 
         var handler =
             new ChangeTicketStatusCommandHandler(
-                repository);
+                repository,
+                dispatcher);
 
 
         var command =
@@ -66,6 +70,12 @@ public class ChangeTicketStatusHandlerTests
             .UpdateAsync(
                 ticket,
                 Arg.Any<CancellationToken>());
+
+        await dispatcher
+            .Received(1)
+            .Send<Guid>(
+                Arg.Any<CreateAuditEntryCommand>(),
+                Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -88,10 +98,13 @@ public class ChangeTicketStatusHandlerTests
             .Returns(ticket);
 
 
+        var dispatcher =
+            Substitute.For<IDispatcher>();
+
         var handler =
             new ChangeTicketStatusCommandHandler(
-                repository);
-
+                repository,
+                dispatcher);
 
         var command =
             new ChangeTicketStatusCommand(

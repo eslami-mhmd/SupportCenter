@@ -6,6 +6,7 @@ using SupportCenter.Infrastructure.Persistence;
 using SupportCenter.Infrastructure.Persistence.Repositories;
 using SupportCenter.Application.Abstractions.Sla;
 using SupportCenter.Application.Features.Sla;
+using SupportCenter.Infrastructure.BackgroundJobs;
 
 namespace SupportCenter.Infrastructure;
 
@@ -53,6 +54,8 @@ public static class DependencyInjection
         services.AddScoped<
         INotificationReadRepository,
         NotificationReadRepository>();
+
+        services.AddHostedService<NotificationProcessingWorker>();
         
         return services;
     }

@@ -3,6 +3,9 @@ using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Tickets.CreateTicket;
 using SupportCenter.Domain.Sla;
 using SupportCenter.Domain.Tickets;
+using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
+using SupportCenter.Application.Abstractions.Messaging;
+
 
 namespace SupportCenter.UnitTests.Tickets;
 
@@ -21,12 +24,14 @@ public class CreateTicketHandlerTests
         var ticketSlaRepository =
             Substitute.For<ITicketSlaRepository>();
 
+        var dispatcher =
+            Substitute.For<IDispatcher>();
 
         var handler = new CreateTicketCommandHandler(
             ticketRepository,
             slaPolicyRepository,
-            ticketSlaRepository);
-
+            ticketSlaRepository,
+            dispatcher);
 
         var organizationId = Guid.NewGuid();
 
@@ -116,6 +121,15 @@ public class CreateTicketHandlerTests
                 Arg.Any<Ticket>(),
                 Arg.Any<CancellationToken>());
 
+        await dispatcher
+            .Received(1)
+            .Send<Guid>(
+                Arg.Is<CreateAuditEntryCommand>(
+                command =>
+                command.Action == "TICKET_CREATED"
+                &&
+                command.EntityName == "Ticket"),
+                Arg.Any<CancellationToken>());
 
 
         await ticketSlaRepository

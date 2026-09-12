@@ -2,6 +2,7 @@ using SupportCenter.Application.Abstractions.Messaging;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Domain.Tickets;
 using SupportCenter.Domain.Sla;
+using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
 
 namespace SupportCenter.Application.Features.Tickets.CreateTicket;
 
@@ -11,14 +12,17 @@ public sealed class CreateTicketCommandHandler
     private readonly ITicketWriteRepository _ticketRepository;
     private readonly ITicketSlaRepository _ticketSlaRepository;
     private readonly ISlaPolicyRepository _slaPolicyRepository;
+    private readonly IDispatcher _dispatcher;
     public CreateTicketCommandHandler(
         ITicketWriteRepository ticketRepository,
         ISlaPolicyRepository slaPolicyRepository,
-        ITicketSlaRepository ticketSlaRepository)
+        ITicketSlaRepository ticketSlaRepository,
+        IDispatcher dispatcher)
     {
         _ticketRepository = ticketRepository;
         _slaPolicyRepository = slaPolicyRepository;
         _ticketSlaRepository = ticketSlaRepository;
+        _dispatcher = dispatcher;
     }
 
     public async Task<Guid> Handle(
@@ -35,6 +39,15 @@ public sealed class CreateTicketCommandHandler
             ticket,
             cancellationToken);
 
+        await _dispatcher.Send<Guid>(
+            new CreateAuditEntryCommand(
+                null,
+                "TICKET_CREATED",
+                "Ticket",
+                ticket.Id,
+                null,
+                $"{{\"Title\":\"{ticket.Title}\"}}"),
+            cancellationToken);
 
 
         var slaPolicy =

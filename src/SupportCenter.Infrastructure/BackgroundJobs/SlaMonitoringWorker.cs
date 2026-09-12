@@ -1,6 +1,9 @@
 using SupportCenter.Application.Abstractions.Sla;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace SupportCenter.Api.BackgroundJobs;
+namespace SupportCenter.Infrastructure.BackgroundJobs;
 
 public sealed class SlaMonitoringWorker
     : BackgroundService

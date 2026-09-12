@@ -56,6 +56,7 @@ public static class DependencyInjection
         NotificationReadRepository>();
 
         services.AddHostedService<NotificationProcessingWorker>();
+        services.AddHostedService<SlaMonitoringWorker>();
         
         return services;
     }

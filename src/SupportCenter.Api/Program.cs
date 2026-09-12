@@ -5,7 +5,6 @@ using SupportCenter.Api.Endpoints.Tickets;
 using SupportCenter.Api.Endpoints.Users;
 using SupportCenter.Api.Endpoints.Sla;
 using SupportCenter.Api.Middleware;
-using SupportCenter.Api.BackgroundJobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +23,6 @@ builder.Services
 
 builder.Services
     .AddOpenApi();
-
-builder.Services.AddHostedService<SlaMonitoringWorker>();
 
 var app = builder.Build();
 

@@ -1,5 +1,6 @@
 using SupportCenter.Application.Abstractions.Messaging;
 using SupportCenter.Application.Abstractions.Repositories;
+using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
 
 namespace SupportCenter.Application.Features.Tickets.AssignTicket;
 
@@ -7,12 +8,13 @@ public sealed class AssignTicketCommandHandler
     : ICommandHandler<AssignTicketCommand, bool>
 {
     private readonly ITicketWriteRepository _repository;
-
-
+    private readonly IDispatcher _dispatcher;
     public AssignTicketCommandHandler(
-        ITicketWriteRepository repository)
+        ITicketWriteRepository repository,
+        IDispatcher dispatcher)
     {
         _repository = repository;
+        _dispatcher = dispatcher;
     }
 
 
@@ -32,6 +34,9 @@ public sealed class AssignTicketCommandHandler
         }
 
 
+        var previousAssigneeId =
+            ticket.AssignedUserId;
+
         ticket.AssignTo(
             command.UserId);
 
@@ -40,6 +45,15 @@ public sealed class AssignTicketCommandHandler
             ticket,
             cancellationToken);
 
+        await _dispatcher.Send<Guid>(
+            new CreateAuditEntryCommand(
+                null,
+                "TICKET_ASSIGNED",
+                "Ticket",
+                ticket.Id,
+                $"{{\"AssignedUserId\":\"{previousAssigneeId}\"}}",
+                $"{{\"AssignedUserId\":\"{ticket.AssignedUserId}\"}}"),
+            cancellationToken);
 
         return true;
     }

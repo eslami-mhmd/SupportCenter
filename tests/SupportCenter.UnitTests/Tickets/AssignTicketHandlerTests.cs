@@ -2,6 +2,8 @@ using NSubstitute;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Tickets.AssignTicket;
 using SupportCenter.Domain.Tickets;
+using SupportCenter.Application.Abstractions.Messaging;
+using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
 
 namespace SupportCenter.UnitTests.Tickets;
 
@@ -27,8 +29,13 @@ public class AssignTicketHandlerTests
             .Returns(ticket);
 
 
+        var dispatcher =
+            Substitute.For<IDispatcher>();
+
         var handler =
-            new AssignTicketCommandHandler(repository);
+            new AssignTicketCommandHandler(
+                repository,
+                dispatcher);
 
 
         var userId = Guid.NewGuid();
@@ -55,6 +62,14 @@ public class AssignTicketHandlerTests
             .UpdateAsync(
                 ticket,
                 Arg.Any<CancellationToken>());
+
+        await dispatcher
+            .Received(1)
+            .Send<Guid>(
+                Arg.Is<CreateAuditEntryCommand>(
+                command =>
+                command.Action == "TICKET_ASSIGNED"),
+                Arg.Any<CancellationToken>());
     }
 
 
@@ -70,10 +85,13 @@ public class AssignTicketHandlerTests
                 Arg.Any<CancellationToken>())
             .Returns((Ticket?)null);
 
+        var dispatcher =
+            Substitute.For<IDispatcher>();
 
         var handler =
-            new AssignTicketCommandHandler(repository);
-
+            new AssignTicketCommandHandler(
+                repository,
+                dispatcher);
 
         var result =
             await handler.Handle(

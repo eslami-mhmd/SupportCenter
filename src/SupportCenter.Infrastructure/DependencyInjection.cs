@@ -54,10 +54,13 @@ public static class DependencyInjection
         services.AddScoped<
         INotificationReadRepository,
         NotificationReadRepository>();
+        services.AddScoped<
+            IAuditRepository,
+            AuditRepository>();
 
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();
-        
+
         return services;
     }
 }

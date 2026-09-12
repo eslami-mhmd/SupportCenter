@@ -24,6 +24,17 @@ public sealed class NotificationRepository
             notification,
             cancellationToken);
 
+        await _context.SaveChangesAsync(
+            cancellationToken);
+    }
+
+
+    public async Task UpdateAsync(
+        Notification notification,
+        CancellationToken cancellationToken)
+    {
+        _context.Notifications.Update(
+            notification);
 
         await _context.SaveChangesAsync(
             cancellationToken);

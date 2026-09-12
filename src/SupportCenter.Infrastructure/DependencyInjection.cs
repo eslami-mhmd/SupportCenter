@@ -50,7 +50,10 @@ public static class DependencyInjection
         services.AddScoped<
             INotificationRepository,
             NotificationRepository>();
-    
+        services.AddScoped<
+        INotificationReadRepository,
+        NotificationReadRepository>();
+        
         return services;
     }
 }

@@ -20,6 +20,7 @@ public sealed class Notification
         Type = type;
         Message = message;
         IsRead = false;
+        IsProcessed = false;
         CreatedDate = DateTime.UtcNow;
     }
 
@@ -35,6 +36,10 @@ public sealed class Notification
     public string Message { get; private set; } = string.Empty;
 
     public bool IsRead { get; private set; }
+
+    public bool IsProcessed { get; private set; }
+
+    public DateTime? ProcessedDate { get; private set; }
 
     public DateTime CreatedDate { get; private set; }
 
@@ -57,5 +62,14 @@ public sealed class Notification
     public void MarkAsRead()
     {
         IsRead = true;
+    }
+
+    public void MarkAsProcessed()
+    {
+        if (IsProcessed)
+            return;
+
+        IsProcessed = true;
+        ProcessedDate = DateTime.UtcNow;
     }
 }

@@ -2,8 +2,10 @@ using NSubstitute;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Organizations.CreateOrganization;
 using SupportCenter.Domain.Organizations;
+using SupportCenter.Application.Abstractions.Messaging;
+using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
 
-namespace SupportCenter.UnitTests.Application;
+namespace SupportCenter.UnitTests.Organizations;
 
 public class CreateOrganizationHandlerTests
 {
@@ -13,7 +15,9 @@ public class CreateOrganizationHandlerTests
         // Arrange
         var repository = Substitute.For<IOrganizationRepository>();
 
-        var handler = new CreateOrganizationCommandHandler(repository);
+        var dispatcher = Substitute.For<IDispatcher>();
+
+        var handler = new CreateOrganizationCommandHandler(repository, dispatcher);
 
         var command = new CreateOrganizationCommand(
             "Acme Software",
@@ -52,6 +56,16 @@ public class CreateOrganizationHandlerTests
             .Received(1)
             .AddAsync(
                 Arg.Any<Organization>(),
+                Arg.Any<CancellationToken>());
+
+        await dispatcher
+            .Received(1)
+            .Send<Guid>(
+                Arg.Is<CreateAuditEntryCommand>(
+                command =>
+                command.Action == "ORGANIZATION_CREATED"
+                &&
+                command.EntityName == "Organization"),
                 Arg.Any<CancellationToken>());
     }
 }

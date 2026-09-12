@@ -1,6 +1,6 @@
 using SupportCenter.Domain.Organizations;
 
-namespace SupportCenter.UnitTests.Domain;
+namespace SupportCenter.UnitTests.Organizations;
 
 public class OrganizationTests
 {

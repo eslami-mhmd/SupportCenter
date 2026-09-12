@@ -4,6 +4,7 @@ using SupportCenter.Domain.Tickets;
 using SupportCenter.Domain.Users;
 using SupportCenter.Domain.Sla;
 using SupportCenter.Domain.Notifications;
+using SupportCenter.Domain.Auditing;
 
 namespace SupportCenter.Infrastructure.Persistence;
 
@@ -22,6 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<TicketSla> TicketSlas => Set<TicketSla>();
     public DbSet<Notification> Notifications =>
     Set<Notification>();
+    public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
     protected override void OnModelCreating(
         ModelBuilder modelBuilder)
     {

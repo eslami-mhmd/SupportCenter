@@ -5,6 +5,8 @@ using SupportCenter.Domain.Users;
 using SupportCenter.Domain.Sla;
 using SupportCenter.Domain.Notifications;
 using SupportCenter.Domain.Auditing;
+using SupportCenter.Domain.Roles;
+using SupportCenter.Domain.Permissions;
 
 namespace SupportCenter.Infrastructure.Persistence;
 
@@ -24,6 +26,11 @@ public class AppDbContext : DbContext
     public DbSet<Notification> Notifications =>
     Set<Notification>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
+    public DbSet<Role> Roles => Set<Role>();
+
+    public DbSet<Permission> Permissions => Set<Permission>();
+
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     protected override void OnModelCreating(
         ModelBuilder modelBuilder)
     {

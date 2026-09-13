@@ -7,6 +7,8 @@ using SupportCenter.Infrastructure.Persistence.Repositories;
 using SupportCenter.Application.Abstractions.Sla;
 using SupportCenter.Application.Features.Sla;
 using SupportCenter.Infrastructure.BackgroundJobs;
+using SupportCenter.Infrastructure.Identity;
+using SupportCenter.Infrastructure.Persistence.Configurations;
 
 namespace SupportCenter.Infrastructure;
 
@@ -34,9 +36,6 @@ public static class DependencyInjection
             ITicketReadRepository,
             TicketReadRepository>();
         services.AddScoped<
-            IUserRepository,
-            UserRepository>();
-        services.AddScoped<
             ISlaPolicyRepository,
             SlaPolicyRepository>();
         services.AddScoped<
@@ -57,6 +56,7 @@ public static class DependencyInjection
         services.AddScoped<
             IAuditRepository,
             AuditRepository>();
+        services.AddIdentityServices();
 
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();

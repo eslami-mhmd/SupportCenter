@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using SupportCenter.Domain.Permissions;
-namespace SupportCenter.Domain.Roles;
+
+namespace SupportCenter.Infrastructure.Identity;
 
 public sealed class RolePermission
 {
@@ -23,7 +25,7 @@ public sealed class RolePermission
     public Guid PermissionId { get; private set; }
 
 
-    public Role Role { get; private set; } = null!;
+    public IdentityRole<Guid> Role { get; private set; } = null!;
 
 
     public Permission Permission { get; private set; } = null!;

@@ -9,6 +9,9 @@ using SupportCenter.Application.Features.Sla;
 using SupportCenter.Infrastructure.BackgroundJobs;
 using SupportCenter.Infrastructure.Identity;
 using SupportCenter.Infrastructure.Persistence.Configurations;
+using SupportCenter.Application.Abstractions.Identity;
+using Microsoft.AspNetCore.Authorization;
+using SupportCenter.Application.Security;
 
 namespace SupportCenter.Infrastructure;
 
@@ -58,6 +61,37 @@ public static class DependencyInjection
             AuditRepository>();
         services.AddIdentityServices();
         services.AddScoped<RbacSeeder>();
+
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<
+            ICurrentUserService,
+            CurrentUserService>();
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(
+                Permissions.TicketsAssign,
+                policy =>
+                {
+                    policy.Requirements.Add(
+                        new PermissionRequirement(
+                            Permissions.TicketsAssign));
+                });
+
+            options.AddPolicy(
+                Permissions.TicketsChangeStatus,
+                policy =>
+                {
+                    policy.Requirements.Add(
+                        new PermissionRequirement(
+                            Permissions.TicketsChangeStatus));
+                });
+        });
+
+
+        services.AddSingleton<IAuthorizationHandler,
+            PermissionAuthorizationHandler>();
 
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();

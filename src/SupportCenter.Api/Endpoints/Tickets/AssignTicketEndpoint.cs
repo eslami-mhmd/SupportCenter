@@ -1,6 +1,6 @@
 using SupportCenter.Application.Abstractions.Messaging;
 using SupportCenter.Application.Features.Tickets.AssignTicket;
-
+using SupportCenter.Application.Security;
 namespace SupportCenter.Api.Endpoints.Tickets;
 
 public static class AssignTicketEndpoint
@@ -27,6 +27,6 @@ public static class AssignTicketEndpoint
                 return result
                     ? Results.Ok()
                     : Results.NotFound();
-            });
+            }).RequireAuthorization(Permissions.TicketsAssign);
     }
 }

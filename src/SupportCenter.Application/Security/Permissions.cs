@@ -1,4 +1,4 @@
-namespace SupportCenter.Infrastructure.Identity;
+namespace SupportCenter.Application.Security;
 
 public static class Permissions
 {

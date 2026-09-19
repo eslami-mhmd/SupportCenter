@@ -36,7 +36,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapCreateOrganization();
 app.MapCreateTicket();
 app.MapGetTicket();

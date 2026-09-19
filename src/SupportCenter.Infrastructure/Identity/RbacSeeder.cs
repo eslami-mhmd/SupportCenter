@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SupportCenter.Domain.Permissions;
 using SupportCenter.Infrastructure.Persistence;
+using SupportCenter.Application.Security;
 
 namespace SupportCenter.Infrastructure.Identity;
 

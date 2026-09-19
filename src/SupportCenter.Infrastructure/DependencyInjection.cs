@@ -57,6 +57,7 @@ public static class DependencyInjection
             IAuditRepository,
             AuditRepository>();
         services.AddIdentityServices();
+        services.AddScoped<RbacSeeder>();
 
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();

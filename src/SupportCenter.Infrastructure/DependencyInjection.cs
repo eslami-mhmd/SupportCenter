@@ -93,6 +93,10 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationHandler,
             PermissionAuthorizationHandler>();
 
+        services.AddScoped<
+            IUserRoleService,
+            UserRoleService>();
+
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();
 

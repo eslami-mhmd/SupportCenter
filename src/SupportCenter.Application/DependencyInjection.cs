@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SupportCenter.Application.Abstractions.Messaging;
 using FluentValidation;
 namespace SupportCenter.Application;
+using SupportCenter.Application.Features.Users.AssignRole;
 
 public static class DependencyInjection
 {
@@ -33,6 +34,7 @@ public static class DependencyInjection
 
 
         services.AddScoped<IDispatcher, Dispatcher>();
+        services.AddScoped<AssignUserRoleCommandHandler>();
 
         return services;
     }

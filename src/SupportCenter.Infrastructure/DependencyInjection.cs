@@ -94,6 +94,10 @@ public static class DependencyInjection
             PermissionAuthorizationHandler>();
 
         services.AddScoped<
+            SupportCenter.Application.Features.Notifications.Processing
+                .NotificationProcessingService>();
+
+        services.AddScoped<
             IUserRoleService,
             UserRoleService>();
         services.AddScoped<IUserService, UserService>();

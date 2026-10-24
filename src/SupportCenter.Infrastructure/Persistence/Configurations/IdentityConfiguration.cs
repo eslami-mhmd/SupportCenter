@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using SupportCenter.Infrastructure.Identity;
@@ -13,6 +14,16 @@ public static class IdentityConfiguration
             .AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<AppDbContext>();
+
+        services
+            .AddAuthentication(
+                CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+                options =>
+                {
+                    options.Cookie.Name = "SupportCenter.Auth";
+                    // options.LoginPath = "/account/login";
+                });
 
         return services;
     }

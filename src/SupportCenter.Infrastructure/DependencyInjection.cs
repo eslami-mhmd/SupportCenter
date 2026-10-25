@@ -101,6 +101,7 @@ public static class DependencyInjection
             IUserRoleService,
             UserRoleService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserAuthenticationService, AuthenticationService>();
 
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();

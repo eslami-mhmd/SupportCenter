@@ -48,5 +48,6 @@ app.MapAssignTicket();
 app.MapCreateSlaPolicy();
 app.MapAssignRoleEndpoint();
 app.MapCreateUserEndpoint();
+app.MapLoginEndpoint();
 
 app.Run();

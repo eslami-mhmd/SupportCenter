@@ -72,6 +72,7 @@ public class SlaMonitoringServiceTests
         ticketReadRepository
             .GetByIdAsync(
                 ticketId,
+                Arg.Any<Guid?>(),
                 Arg.Any<CancellationToken>())
             .Returns(ticket);
 
@@ -165,6 +166,7 @@ public class SlaMonitoringServiceTests
         ticketReadRepository
             .GetByIdAsync(
                 Arg.Any<Guid>(),
+                Arg.Any<Guid?>(),
                 Arg.Any<CancellationToken>())
             .Returns((TicketDto?)null);
 

@@ -1,4 +1,5 @@
 using NSubstitute;
+using SupportCenter.Application.Abstractions.Identity;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Tickets.GetTicket;
 using SupportCenter.Application.Exceptions;
@@ -15,25 +16,37 @@ public class GetTicketHandlerTests
 
         var ticketId = Guid.NewGuid();
         var organizationId = Guid.NewGuid();
-
-        var ticket = new TicketDto(
-            ticketId,
-            organizationId,
-            "Cannot login",
-            "User cannot access account",
-            "Open",
-            "High",
-            DateTime.UtcNow);
+        var ticket =
+            new TicketDto(
+                ticketId,
+                organizationId,
+                "Cannot login",
+                "User cannot access account",
+                "Open",
+                "High",
+                DateTime.UtcNow);
 
 
         repository
             .GetByIdAsync(
                 ticketId,
+                organizationId,
                 Arg.Any<CancellationToken>())
             .Returns(ticket);
 
 
-        var handler = new GetTicketQueryHandler(repository);
+        var currentUser =
+            Substitute.For<ICurrentUserService>();
+
+        currentUser
+            .OrganizationId
+            .Returns(organizationId);
+
+
+        var handler =
+            new GetTicketQueryHandler(
+                repository,
+                currentUser);
 
 
         // Act
@@ -49,6 +62,7 @@ public class GetTicketHandlerTests
             .Received(1)
             .GetByIdAsync(
                 ticketId,
+                Arg.Any<Guid?>(),
                 Arg.Any<CancellationToken>());
     }
 
@@ -64,11 +78,23 @@ public class GetTicketHandlerTests
         repository
             .GetByIdAsync(
                 ticketId,
+                Arg.Any<Guid?>(),
                 Arg.Any<CancellationToken>())
             .Returns((TicketDto?)null);
 
 
-        var handler = new GetTicketQueryHandler(repository);
+        var currentUser =
+            Substitute.For<ICurrentUserService>();
+
+        currentUser
+            .OrganizationId
+            .Returns((Guid?)null);
+
+
+        var handler =
+            new GetTicketQueryHandler(
+                repository,
+                currentUser);
 
 
         // Act + Assert

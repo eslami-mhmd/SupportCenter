@@ -34,6 +34,12 @@ public sealed class AuthenticationService(
             new(ClaimTypes.Email, user.Email ?? string.Empty)
         };
 
+        if (user.OrganizationId is { } organizationId)
+        {
+            claims.Add(
+                new Claim("OrganizationId", organizationId.ToString()));
+        }
+
         claims.AddRange(
             (await userManager.GetRolesAsync(user))
                 .Select(role => new Claim(ClaimTypes.Role, role)));

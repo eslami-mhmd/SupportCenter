@@ -53,6 +53,7 @@ public sealed class SlaMonitoringService
             var ticket =
                 await _ticketReadRepository.GetByIdAsync(
                     ticketSla.TicketId,
+                    null,
                     cancellationToken);
 
 

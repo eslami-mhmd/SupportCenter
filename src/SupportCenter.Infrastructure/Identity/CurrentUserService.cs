@@ -37,6 +37,24 @@ public sealed class CurrentUserService
         }
     }
 
+    public Guid? OrganizationId
+    {
+        get
+        {
+            var value =
+                _httpContextAccessor
+                    .HttpContext?
+                    .User?
+                    .FindFirstValue("OrganizationId");
+
+
+            return Guid.TryParse(
+                value,
+                out var id)
+                ? id
+                : null;
+        }
+    }
 
     public bool IsAuthenticated =>
         _httpContextAccessor

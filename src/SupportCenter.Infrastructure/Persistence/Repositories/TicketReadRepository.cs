@@ -21,11 +21,15 @@ public sealed class TicketReadRepository
 
     public async Task<TicketDto?> GetByIdAsync(
         Guid id,
+        Guid? organizationId,
         CancellationToken cancellationToken)
     {
         return await _context.Tickets
             .AsNoTracking()
-            .Where(x => x.Id == id)
+            .Where(x =>
+                x.Id == id &&
+                (!organizationId.HasValue ||
+                 x.OrganizationId == organizationId))
             .Select(x => new TicketDto(
                 x.Id,
                 x.OrganizationId,

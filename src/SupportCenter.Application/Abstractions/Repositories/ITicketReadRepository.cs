@@ -7,6 +7,7 @@ public interface ITicketReadRepository
 {
     Task<TicketDto?> GetByIdAsync(
         Guid id,
+        Guid? organizationId,
         CancellationToken cancellationToken);
     Task<PagedResult<TicketDto>> ListAsync(
         ListTicketsQuery query,

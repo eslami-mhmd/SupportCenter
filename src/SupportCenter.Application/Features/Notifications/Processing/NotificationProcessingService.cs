@@ -1,4 +1,5 @@
 using SupportCenter.Application.Abstractions.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace SupportCenter.Application.Features.Notifications.Processing;
 
@@ -6,14 +7,17 @@ public sealed class NotificationProcessingService
 {
     private readonly INotificationReadRepository _readRepository;
     private readonly INotificationRepository _repository;
+    private readonly ILogger<NotificationProcessingService> _logger;
 
 
     public NotificationProcessingService(
         INotificationReadRepository readRepository,
-        INotificationRepository repository)
+        INotificationRepository repository,
+        ILogger<NotificationProcessingService> logger)
     {
         _readRepository = readRepository;
         _repository = repository;
+        _logger = logger;
     }
 
 
@@ -39,6 +43,10 @@ public sealed class NotificationProcessingService
             await _repository.UpdateAsync(
                 notification,
                 cancellationToken);
+
+            _logger.LogInformation(
+                "Processed notification {NotificationId}.",
+                notification.Id);
         }
     }
 }

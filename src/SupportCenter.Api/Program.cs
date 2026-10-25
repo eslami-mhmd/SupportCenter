@@ -1,3 +1,5 @@
+using Serilog;
+using Serilog.Events;
 using SupportCenter.Application;
 using SupportCenter.Infrastructure;
 using SupportCenter.Api.Endpoints.Organizations;
@@ -7,7 +9,16 @@ using SupportCenter.Api.Middleware;
 using SupportCenter.Infrastructure.Identity;
 using SupportCenter.Api.Endpoints.Users;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -36,6 +47,7 @@ using (var scope = app.Services.CreateScope())
     await seeder.SeedAsync();
 }
 
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -50,4 +62,11 @@ app.MapAssignRoleEndpoint();
 app.MapCreateUserEndpoint();
 app.MapLoginEndpoint();
 
-app.Run();
+try
+{
+    app.Run();
+}
+finally
+{
+    Log.CloseAndFlush();
+}

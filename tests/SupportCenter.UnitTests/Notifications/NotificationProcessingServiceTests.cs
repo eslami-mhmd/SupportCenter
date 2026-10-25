@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Notifications.Processing;
@@ -17,6 +18,9 @@ public class NotificationProcessingServiceTests
 
         var repository =
             Substitute.For<INotificationRepository>();
+
+        var logger =
+            Substitute.For<ILogger<NotificationProcessingService>>();
 
 
         var notification =
@@ -40,7 +44,8 @@ public class NotificationProcessingServiceTests
         var service =
             new NotificationProcessingService(
                 readRepository,
-                repository);
+                repository,
+                logger);
 
 
 

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using SupportCenter.Application.Abstractions.Messaging;
 using SupportCenter.Application.Abstractions.Repositories;
@@ -26,6 +27,9 @@ public class SlaMonitoringServiceTests
 
         var dispatcher =
             Substitute.For<IDispatcher>();
+
+        var logger =
+            Substitute.For<ILogger<SlaMonitoringService>>();
 
 
         var ticketId =
@@ -77,7 +81,8 @@ public class SlaMonitoringServiceTests
                 slaReadRepository,
                 slaRepository,
                 ticketReadRepository,
-                dispatcher);
+                dispatcher,
+                logger);
 
 
 
@@ -134,6 +139,9 @@ public class SlaMonitoringServiceTests
         var dispatcher =
             Substitute.For<IDispatcher>();
 
+        var logger =
+            Substitute.For<ILogger<SlaMonitoringService>>();
+
 
         var ticketSla =
             TicketSla.Create(
@@ -166,7 +174,8 @@ public class SlaMonitoringServiceTests
                 slaReadRepository,
                 slaRepository,
                 ticketReadRepository,
-                dispatcher);
+                dispatcher,
+                logger);
 
 
 

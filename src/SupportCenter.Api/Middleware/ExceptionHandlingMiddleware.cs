@@ -7,12 +7,15 @@ namespace SupportCenter.Api.Middleware;
 public sealed class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
 
     public ExceptionHandlingMiddleware(
-        RequestDelegate next)
+        RequestDelegate next,
+        ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
 
@@ -31,7 +34,7 @@ public sealed class ExceptionHandlingMiddleware
         }
     }
 
-    private static async Task HandleExceptionAsync(
+    private async Task HandleExceptionAsync(
     HttpContext context,
     Exception exception)
     {
@@ -64,6 +67,12 @@ public sealed class ExceptionHandlingMiddleware
 
             return;
         }
+
+        _logger.LogError(
+            exception,
+            "Unhandled exception while processing request {Method} {Path}.",
+            context.Request.Method,
+            context.Request.Path);
 
         context.Response.StatusCode =
             StatusCodes.Status500InternalServerError;

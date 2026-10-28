@@ -15,12 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\SupportCenter.Domain\SupportCenter.Domain.csproj" />
+    <ProjectReference Include="..\..\src\SupportCenter.Application\SupportCenter.Application.csproj" />
+    <ProjectReference Include="..\..\src\SupportCenter.Infrastructure\SupportCenter.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\SupportCenter.Api\SupportCenter.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\SupportCenter.Domain\SupportCenter.Domain.csproj" />
-    <ProjectReference Include="..\..\src\SupportCenter.Application\SupportCenter.Application.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

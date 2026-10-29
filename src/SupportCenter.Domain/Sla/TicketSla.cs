@@ -1,10 +1,12 @@
+using SupportCenter.Domain.Common;
 using SupportCenter.Domain.Exceptions;
 
 namespace SupportCenter.Domain.Sla;
 
-public sealed class TicketSla
+public sealed class TicketSla : AggregateRoot
 {
     private TicketSla()
+        : base(Guid.Empty)
     {
     }
 
@@ -15,17 +17,14 @@ public sealed class TicketSla
         Guid slaPolicyId,
         DateTime responseDeadline,
         DateTime resolutionDeadline)
+        : base(id)
     {
-        Id = id;
         TicketId = ticketId;
         SlaPolicyId = slaPolicyId;
         ResponseDeadline = responseDeadline;
         ResolutionDeadline = resolutionDeadline;
         IsBreached = false;
     }
-
-
-    public Guid Id { get; private set; }
 
 
     public Guid TicketId { get; private set; }

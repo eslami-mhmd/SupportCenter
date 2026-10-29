@@ -1,8 +1,11 @@
+using SupportCenter.Domain.Common;
+
 namespace SupportCenter.Domain.Auditing;
 
-public sealed class AuditEntry
+public sealed class AuditEntry : Entity
 {
     private AuditEntry()
+        : base(Guid.Empty)
     {
     }
 
@@ -15,8 +18,8 @@ public sealed class AuditEntry
         Guid entityId,
         string? oldValues,
         string? newValues)
+        : base(id)
     {
-        Id = id;
         UserId = userId;
         Action = action;
         EntityName = entityName;
@@ -25,9 +28,6 @@ public sealed class AuditEntry
         NewValues = newValues;
         CreatedDate = DateTime.UtcNow;
     }
-
-
-    public Guid Id { get; private set; }
 
 
     public Guid? UserId { get; private set; }

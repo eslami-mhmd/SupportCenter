@@ -1,8 +1,11 @@
+using SupportCenter.Domain.Common;
+
 namespace SupportCenter.Domain.Notifications;
 
-public sealed class Notification
+public sealed class Notification : AggregateRoot
 {
     private Notification()
+        : base(Guid.Empty)
     {
     }
 
@@ -13,8 +16,8 @@ public sealed class Notification
         Guid? userId,
         string type,
         string message)
+        : base(id)
     {
-        Id = id;
         OrganizationId = organizationId;
         UserId = userId;
         Type = type;
@@ -24,8 +27,6 @@ public sealed class Notification
         CreatedDate = DateTime.UtcNow;
     }
 
-
-    public Guid Id { get; private set; }
 
     public Guid OrganizationId { get; private set; }
 

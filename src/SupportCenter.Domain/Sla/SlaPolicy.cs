@@ -1,11 +1,13 @@
+using SupportCenter.Domain.Common;
 using SupportCenter.Domain.Exceptions;
 using SupportCenter.Domain.Tickets;
 
 namespace SupportCenter.Domain.Sla;
 
-public sealed class SlaPolicy
+public sealed class SlaPolicy : AggregateRoot
 {
     private SlaPolicy()
+        : base(Guid.Empty)
     {
     }
 
@@ -15,15 +17,13 @@ public sealed class SlaPolicy
         TicketPriority priority,
         int responseTimeMinutes,
         int resolutionTimeMinutes)
+        : base(id)
     {
-        Id = id;
         OrganizationId = organizationId;
         Priority = priority;
         ResponseTimeMinutes = responseTimeMinutes;
         ResolutionTimeMinutes = resolutionTimeMinutes;
     }
-
-    public Guid Id { get; private set; }
 
     public Guid OrganizationId { get; private set; }
 

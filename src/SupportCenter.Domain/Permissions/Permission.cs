@@ -1,8 +1,11 @@
+using SupportCenter.Domain.Common;
+
 namespace SupportCenter.Domain.Permissions;
 
-public sealed class Permission
+public sealed class Permission : Entity
 {
     private Permission()
+        : base(Guid.Empty)
     {
     }
 
@@ -10,13 +13,10 @@ public sealed class Permission
     private Permission(
         Guid id,
         string name)
+        : base(id)
     {
-        Id = id;
         Name = name;
     }
-
-
-    public Guid Id { get; private set; }
 
 
     public string Name { get; private set; } = string.Empty;

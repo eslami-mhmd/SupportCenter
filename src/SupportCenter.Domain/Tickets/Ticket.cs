@@ -1,9 +1,12 @@
+using SupportCenter.Domain.Common;
+using SupportCenter.Domain.Events;
 using SupportCenter.Domain.Exceptions;
 namespace SupportCenter.Domain.Tickets;
 
-public sealed class Ticket
+public sealed class Ticket : AggregateRoot
 {
     private Ticket()
+        : base(Guid.Empty)
     {
     }
 
@@ -12,8 +15,8 @@ public sealed class Ticket
         Guid organizationId,
         string title,
         string description)
+        : base(id)
     {
-        Id = id;
         OrganizationId = organizationId;
         Title = title;
         Description = description;
@@ -21,8 +24,6 @@ public sealed class Ticket
         Priority = TicketPriority.Medium;
         CreatedDate = DateTime.UtcNow;
     }
-
-    public Guid Id { get; private set; }
 
     public Guid OrganizationId { get; private set; }
 

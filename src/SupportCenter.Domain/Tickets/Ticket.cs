@@ -74,7 +74,9 @@ public sealed class Ticket : AggregateRoot
                 $"Cannot change ticket status from {Status} to {newStatus}.");
         }
 
+        var previousStatus = Status;
         Status = newStatus;
+        AddDomainEvent(new TicketStatusChangedEvent(Id, previousStatus, newStatus));
     }
 
 

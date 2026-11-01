@@ -1,6 +1,7 @@
 using NSubstitute;
 using SupportCenter.Application.Abstractions.Repositories;
 using SupportCenter.Application.Features.Tickets.CreateTicket;
+using SupportCenter.Domain.PriorityService;
 using SupportCenter.Domain.Sla;
 using SupportCenter.Domain.Tickets;
 using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
@@ -27,11 +28,21 @@ public class CreateTicketHandlerTests
         var dispatcher =
             Substitute.For<IDispatcher>();
 
+        var priorityAgent =
+            Substitute.For<IPriorityService>();
+        priorityAgent
+            .DeterminePriorityAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<CancellationToken>())
+            .Returns(TicketPriority.Medium);
+
         var handler = new CreateTicketCommandHandler(
             ticketRepository,
             slaPolicyRepository,
             ticketSlaRepository,
-            dispatcher);
+            dispatcher,
+            priorityAgent);
 
         var organizationId = Guid.NewGuid();
 

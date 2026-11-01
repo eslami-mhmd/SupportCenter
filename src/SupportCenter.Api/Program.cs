@@ -57,6 +57,7 @@ app.MapGetTicket();
 app.MapListTickets();
 app.MapChangeTicketStatus();
 app.MapAssignTicket();
+app.MapUpdateTicket();
 app.MapCreateSlaPolicy();
 app.MapAssignRoleEndpoint();
 app.MapCreateUserEndpoint();

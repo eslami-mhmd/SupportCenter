@@ -1,3 +1,4 @@
+using SupportCenter.Domain.PriorityService;
 using SupportCenter.Domain.Common;
 using SupportCenter.Domain.Events;
 using SupportCenter.Domain.Exceptions;
@@ -14,14 +15,15 @@ public sealed class Ticket : AggregateRoot
         Guid id,
         Guid organizationId,
         string title,
-        string description)
+        string description,
+        TicketPriority priority = TicketPriority.Medium)
         : base(id)
     {
         OrganizationId = organizationId;
         Title = title;
         Description = description;
         Status = TicketStatus.Open;
-        Priority = TicketPriority.Medium;
+        Priority = priority;
         CreatedDate = DateTime.UtcNow;
     }
 
@@ -58,6 +60,28 @@ public sealed class Ticket : AggregateRoot
             organizationId,
             title,
             description);
+    }
+
+    public static async Task<Ticket> CreateAsync(
+        Guid organizationId,
+        string title,
+        string description,
+        IPriorityService agent,
+        CancellationToken cancellationToken = default)
+    {
+        if (organizationId == Guid.Empty)
+            throw new DomainException("Organization is required.");
+
+        if (string.IsNullOrWhiteSpace(title))
+            throw new DomainException("Title is required.");
+
+        var priority = await agent.DeterminePriorityAsync(title, description, cancellationToken);
+        return new Ticket(
+            Guid.NewGuid(),
+            organizationId,
+            title,
+            description,
+            priority);
     }
 
     public void ChangeStatus(TicketStatus newStatus)
@@ -114,5 +138,31 @@ public sealed class Ticket : AggregateRoot
         }
 
         AssignedUserId = userId;
+    }
+
+    public void UpdateTitle(string title)
+    {
+        EnsureNotClosed();
+        if (string.IsNullOrWhiteSpace(title))
+            throw new DomainException("Title is required.");
+        Title = title;
+    }
+
+    public void UpdateDescription(string description)
+    {
+        EnsureNotClosed();
+        Description = description;
+    }
+
+    public void SetPriority(TicketPriority priority)
+    {
+        EnsureNotClosed();
+        Priority = priority;
+    }
+
+    private void EnsureNotClosed()
+    {
+        if (Status == TicketStatus.Closed)
+            throw new DomainException("Closed tickets cannot be modified.");
     }
 }

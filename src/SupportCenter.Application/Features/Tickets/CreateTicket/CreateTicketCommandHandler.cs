@@ -1,5 +1,6 @@
 using SupportCenter.Application.Abstractions.Messaging;
 using SupportCenter.Application.Abstractions.Repositories;
+using SupportCenter.Domain.PriorityService;
 using SupportCenter.Domain.Tickets;
 using SupportCenter.Domain.Sla;
 using SupportCenter.Application.Features.Auditing.CreateAuditEntry;
@@ -13,26 +14,32 @@ public sealed class CreateTicketCommandHandler
     private readonly ITicketSlaRepository _ticketSlaRepository;
     private readonly ISlaPolicyRepository _slaPolicyRepository;
     private readonly IDispatcher _dispatcher;
+    private readonly IPriorityService _priorityAgent;
+
     public CreateTicketCommandHandler(
         ITicketWriteRepository ticketRepository,
         ISlaPolicyRepository slaPolicyRepository,
         ITicketSlaRepository ticketSlaRepository,
-        IDispatcher dispatcher)
+        IDispatcher dispatcher,
+        IPriorityService priorityAgent)
     {
         _ticketRepository = ticketRepository;
         _slaPolicyRepository = slaPolicyRepository;
         _ticketSlaRepository = ticketSlaRepository;
         _dispatcher = dispatcher;
+        _priorityAgent = priorityAgent;
     }
 
     public async Task<Guid> Handle(
         CreateTicketCommand command,
         CancellationToken cancellationToken)
     {
-        var ticket = Ticket.Create(
+        var ticket = await Ticket.CreateAsync(
             command.OrganizationId,
             command.Title,
-            command.Description);
+            command.Description,
+            _priorityAgent,
+            cancellationToken);
 
 
         await _ticketRepository.AddAsync(

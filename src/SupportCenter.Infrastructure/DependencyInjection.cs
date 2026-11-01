@@ -12,6 +12,8 @@ using SupportCenter.Infrastructure.Persistence.Configurations;
 using SupportCenter.Application.Abstractions.Identity;
 using Microsoft.AspNetCore.Authorization;
 using SupportCenter.Application.Security;
+using SupportCenter.Domain.PriorityService;
+using SupportCenter.Infrastructure.Services.PriorityService;
 
 namespace SupportCenter.Infrastructure;
 
@@ -102,6 +104,21 @@ public static class DependencyInjection
             UserRoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserAuthenticationService, AuthenticationService>();
+
+        services.AddOptions<PriorityServiceOptions>()
+            .Bind(configuration.GetSection("PriorityService"))
+            .ValidateDataAnnotations();
+
+        services.AddScoped<IPriorityService>(sp =>
+        {
+            var options = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<PriorityServiceOptions>>().Value;
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri(options.Endpoint),
+                Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds)
+            };
+            return new TicketPriorityService(client, sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<PriorityServiceOptions>>());
+        });
 
         services.AddHostedService<NotificationProcessingWorker>();
         services.AddHostedService<SlaMonitoringWorker>();

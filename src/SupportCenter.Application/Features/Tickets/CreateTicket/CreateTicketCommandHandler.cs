@@ -14,20 +14,20 @@ public sealed class CreateTicketCommandHandler
     private readonly ITicketSlaRepository _ticketSlaRepository;
     private readonly ISlaPolicyRepository _slaPolicyRepository;
     private readonly IDispatcher _dispatcher;
-    private readonly IPriorityService _priorityAgent;
+    private readonly IPriorityService _priorityService;
 
     public CreateTicketCommandHandler(
         ITicketWriteRepository ticketRepository,
         ISlaPolicyRepository slaPolicyRepository,
         ITicketSlaRepository ticketSlaRepository,
         IDispatcher dispatcher,
-        IPriorityService priorityAgent)
+        IPriorityService priorityService)
     {
         _ticketRepository = ticketRepository;
         _slaPolicyRepository = slaPolicyRepository;
         _ticketSlaRepository = ticketSlaRepository;
         _dispatcher = dispatcher;
-        _priorityAgent = priorityAgent;
+        _priorityService = priorityService;
     }
 
     public async Task<Guid> Handle(
@@ -38,7 +38,7 @@ public sealed class CreateTicketCommandHandler
             command.OrganizationId,
             command.Title,
             command.Description,
-            _priorityAgent,
+            _priorityService,
             cancellationToken);
 
 

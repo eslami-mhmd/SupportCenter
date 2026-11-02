@@ -10,16 +10,16 @@ public sealed class UpdateTicketCommandHandler
     : ICommandHandler<UpdateTicketCommand, Guid>
 {
     private readonly ITicketWriteRepository _repository;
-    private readonly IPriorityService _priorityAgent;
+    private readonly IPriorityService _priorityService;
     private readonly IDispatcher _dispatcher;
 
     public UpdateTicketCommandHandler(
         ITicketWriteRepository repository,
-        IPriorityService priorityAgent,
+        IPriorityService priorityService,
         IDispatcher dispatcher)
     {
         _repository = repository;
-        _priorityAgent = priorityAgent;
+        _priorityService = priorityService;
         _dispatcher = dispatcher;
     }
 
@@ -54,7 +54,7 @@ public sealed class UpdateTicketCommandHandler
         else if (titleChanged || descriptionChanged)
         {
             // Re-determine priority via agent when content changes
-            var priority = await _priorityAgent.DeterminePriorityAsync(
+            var priority = await _priorityService.DeterminePriorityAsync(
                 ticket.Title,
                 ticket.Description,
                 cancellationToken);

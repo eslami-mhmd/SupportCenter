@@ -28,9 +28,9 @@ public class CreateTicketHandlerTests
         var dispatcher =
             Substitute.For<IDispatcher>();
 
-        var priorityAgent =
+        var priorityService =
             Substitute.For<IPriorityService>();
-        priorityAgent
+        priorityService
             .DeterminePriorityAsync(
                 Arg.Any<string>(),
                 Arg.Any<string>(),
@@ -42,7 +42,7 @@ public class CreateTicketHandlerTests
             slaPolicyRepository,
             ticketSlaRepository,
             dispatcher,
-            priorityAgent);
+            priorityService);
 
         var organizationId = Guid.NewGuid();
 

@@ -13,6 +13,12 @@ public class TicketPriorityService : Domain.PriorityService.IPriorityService
     {
         _httpClient = httpClient;
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
+
+        if (!string.IsNullOrWhiteSpace(_options.BearerToken))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _options.BearerToken);
+        }
     }
 
     public async Task<Domain.Tickets.TicketPriority> DeterminePriorityAsync(
@@ -91,7 +97,7 @@ public class TicketPriorityService : Domain.PriorityService.IPriorityService
                 cancellationToken);
 
             throw new HttpRequestException(
-                $"Laya API returned {(int)response.StatusCode}: {error}");
+                $"Model API returned {(int)response.StatusCode}: {error}");
         }
 
         using var json = await response.Content.ReadFromJsonAsync<JsonDocument>(
@@ -104,7 +110,7 @@ public class TicketPriorityService : Domain.PriorityService.IPriorityService
             !priorityAnswer.TryGetProperty("choice", out var choice))
         {
             throw new InvalidOperationException(
-                "Laya returned an invalid priority response.");
+                "Model returned an invalid priority response.");
         }
 
         var priorityValue = choice.GetString();
@@ -116,7 +122,7 @@ public class TicketPriorityService : Domain.PriorityService.IPriorityService
             !System.Enum.IsDefined(priority))
         {
             throw new InvalidOperationException(
-                $"Laya returned an unknown priority: {priorityValue}");
+                $"Model returned an unknown priority: {priorityValue}");
         }
 
         return priority;

@@ -5,13 +5,13 @@ namespace SupportCenter.Application.Features.Auth.Login;
 
 public sealed record LoginCommand(
     string Email,
-    string Password) : ICommand<Guid>;
+    string Password) : ICommand<LoginResult>;
 
 public sealed class LoginCommandHandler(
     IUserAuthenticationService authenticationService)
-    : ICommandHandler<LoginCommand, Guid>
+    : ICommandHandler<LoginCommand, LoginResult>
 {
-    public Task<Guid> Handle(
+    public Task<LoginResult> Handle(
         LoginCommand command,
         CancellationToken cancellationToken)
     {

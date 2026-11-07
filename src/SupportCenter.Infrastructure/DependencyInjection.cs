@@ -62,6 +62,11 @@ public static class DependencyInjection
             IAuditRepository,
             AuditRepository>();
         services.AddIdentityServices();
+
+        services.AddOptions<JwtSettings>()
+            .Bind(configuration.GetSection("JwtSettings"))
+            .ValidateDataAnnotations();
+
         services.AddScoped<RbacSeeder>();
 
         services.AddHttpContextAccessor();

@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SupportCenter.Infrastructure.Identity;
+using System.Text;
 
 namespace SupportCenter.Infrastructure.Persistence.Configurations;
 
@@ -16,9 +20,18 @@ public static class IdentityConfiguration
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<AppDbContext>();
 
+        var serviceProvider = services.BuildServiceProvider();
+        var jwtSettings =
+            serviceProvider.GetRequiredService<IOptions<JwtSettings>>().Value;
+
         services
-            .AddAuthentication(
-                CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
                 options =>
                 {
@@ -47,6 +60,25 @@ public static class IdentityConfiguration
                             }
 
                             return Task.CompletedTask;
+                        };
+                })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+                options =>
+                {
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = jwtSettings.Issuer,
+                            ValidAudience = jwtSettings.Audience,
+                            IssuerSigningKey =
+                                new SymmetricSecurityKey(
+                                    Encoding.UTF8.GetBytes(
+                                        jwtSettings.Secret)),
+                            ClockSkew = TimeSpan.Zero
                         };
                 });
 

@@ -18,11 +18,11 @@ public static class LoginEndpoint
                 request.Email,
                 request.Password);
 
-            var userId = await dispatcher.Send<Guid>(
+            var result = await dispatcher.Send<LoginResult>(
                 command,
                 cancellationToken);
 
-            return Results.Ok(new LoginResponse(userId));
+            return Results.Ok(new LoginResponse(result.UserId, result.Token));
         });
 
         app.MapPost("/api/auth/logout", async (
@@ -44,4 +44,4 @@ public sealed record LoginRequest(
     string Email,
     string Password);
 
-public sealed record LoginResponse(Guid Id);
+public sealed record LoginResponse(Guid Id, string Token);

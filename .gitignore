@@ -3,3 +3,10 @@ graphify-out/
 # Build Folders
 bin/
 obj/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+frontend/.env
+frontend/build/

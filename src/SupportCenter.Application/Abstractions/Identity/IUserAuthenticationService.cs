@@ -1,8 +1,10 @@
+using SupportCenter.Application.Features.Auth.Login;
+
 namespace SupportCenter.Application.Abstractions.Identity;
 
 public interface IUserAuthenticationService
 {
-    Task<Guid> LoginAsync(
+    Task<LoginResult> LoginAsync(
         string email,
         string password,
         CancellationToken cancellationToken);

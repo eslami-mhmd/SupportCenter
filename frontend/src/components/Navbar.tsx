@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "../context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { Globe, Ticket, Users, Building, ShieldCheck, LogIn, LogOut, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";

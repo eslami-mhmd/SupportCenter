@@ -20,7 +20,7 @@ interface TicketDetail {
 export default function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { t, dir } = useLanguage();
-  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [ticket, setTicket] = useState<TicketDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [newStatus, setNewStatus] = useState("");
@@ -28,7 +28,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
   const router = useRouter();
 
   useEffect(() => {
-    apiFetch<Ticket>(`/tickets/${id}`)
+    apiFetch<TicketDetail>(`/tickets/${id}`)
       .then((data) => {
         setTicket(data);
         setNewStatus(data.status);
